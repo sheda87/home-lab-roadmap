@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Home Lab Roadmap</title>
+<meta name="description" content="A step-by-step plan from IT networking basics to a Raspberry Pi home lab, with costs.">
+<meta name="theme-color" content="#0f1514">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Home Lab">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: one calm column. A sticky progress strip, a summary, then seven levels of check-off rows, easiest first. */
+:root {
+  --bg: #edf0f0;
+  --surface: #fafbfb;
+  --ink: #16211f;
+  --muted: #586664;
+  --line: #cfd7d6;
+  --accent: #0b7a66;
+  --accent-ink: #ffffff;
+  --money: #8a4b00;
+  --chip: #e1e7e6;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1514;
+    --surface: #151d1c;
+    --ink: #e4ecea;
+    --muted: #93a5a2;
+    --line: #263330;
+    --accent: #3ccfa6;
+    --accent-ink: #06201a;
+    --money: #f0b35b;
+    --chip: #1e2928;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1514;
+  --surface: #151d1c;
+  --ink: #e4ecea;
+  --muted: #93a5a2;
+  --line: #263330;
+  --accent: #3ccfa6;
+  --accent-ink: #06201a;
+  --money: #f0b35b;
+  --chip: #1e2928;
+  color-scheme: dark;
+}
+
+:root { color-scheme: light; }
+html { -webkit-text-size-adjust: 100%; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  padding-block: 0 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--bg);
+  z-index: 10;
+}
+.wrap { max-width: 760px; margin: 0 auto; }
+code, .mono { font-family: var(--font-mono); }
+code {
+  font-size: 0.86em;
+  background: var(--chip);
+  padding: 1px 6px;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* sticky strip */
+.strip {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 9;
+  background: var(--bg);
+  padding-block: 10px 8px;
+  border-bottom: 1px solid var(--line);
+  margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  padding-inline: max(16px, env(safe-area-inset-left, 0px));
+}
+.strip-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  gap: 8px 16px;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.strip b { color: var(--ink); font-weight: 500; }
+.bar { height: 4px; background: var(--chip); border-radius: 2px; margin-top: 8px; overflow: hidden; max-width: 760px; margin-inline: auto; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.25s ease; }
+
+/* intro */
+header.intro { padding-block: 36px 8px; }
+.kicker { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+h1 { font-size: clamp(28px, 6vw, 40px); line-height: 1.12; font-weight: 600; margin: 0 0 14px; text-wrap: balance; letter-spacing: -0.01em; }
+.lede { color: var(--muted); max-width: 62ch; margin: 0; }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-block: 26px 14px;
+}
+.stat { background: var(--surface); padding: 14px 16px; min-width: 0; }
+.stat .k { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.stat .v { font-family: var(--font-mono); font-size: 22px; font-weight: 500; margin-top: 4px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.stat .v.money { color: var(--money); }
+.note { font-size: 13px; color: var(--muted); max-width: 66ch; margin: 0; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-block: 22px 6px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button, .toggle {
+  font: inherit;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  background: var(--surface);
+  color: var(--muted);
+  border: 0;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.toggle { border: 1px solid var(--line); border-radius: 6px; }
+.toggle[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* levels */
+.level { margin-top: 44px; }
+.level-head { border-top: 2px solid var(--ink); padding-top: 14px; display: grid; gap: 4px; }
+.level-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px 16px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.level-top .band { color: var(--money); letter-spacing: 0.02em; text-transform: none; font-size: 13px; font-variant-numeric: tabular-nums; }
+.level h2 { margin: 0; font-size: 22px; line-height: 1.2; font-weight: 600; text-wrap: balance; }
+.level-blurb { color: var(--muted); margin: 2px 0 0; max-width: 62ch; }
+ul.tasks { list-style: none; margin: 14px 0 0; padding: 0; }
+
+.task { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 12px; padding-block: 16px; border-top: 1px solid var(--line); }
+.task[hidden] { display: none; }
+.task input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none;
+  width: 22px; height: 22px; margin: 2px 0 0;
+  border: 2px solid var(--muted);
+  border-radius: 4px;
+  background: var(--surface);
+  cursor: pointer;
+  display: grid; place-content: center;
+}
+.task input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
+.task input[type="checkbox"]:checked::after {
+  content: "";
+  width: 5px; height: 10px;
+  border: solid var(--accent-ink);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+.task .title { font-weight: 600; font-size: 16px; line-height: 1.35; cursor: pointer; display: inline; }
+.task .why { margin: 4px 0 0; color: var(--muted); max-width: 64ch; }
+.task.done .title { text-decoration: line-through; text-decoration-thickness: 1px; color: var(--muted); }
+.task.done .why { opacity: 0.7; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; font-family: var(--font-mono); font-size: 12px; }
+.meta span { background: var(--chip); padding: 2px 8px; border-radius: 4px; color: var(--muted); }
+.meta .cost { color: var(--money); font-weight: 500; font-variant-numeric: tabular-nums; }
+.meta .cost.free { color: var(--accent); }
+details { margin-top: 10px; }
+summary { cursor: pointer; font-family: var(--font-mono); font-size: 12.5px; color: var(--accent); width: fit-content; padding-block: 2px; }
+details ol { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; max-width: 64ch; }
+details p.extra { margin: 10px 0 0; font-size: 13.5px; color: var(--muted); max-width: 64ch; }
+.linkrow { margin: 10px 0 0; font-size: 14px; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.tablewrap { overflow-x: auto; margin-top: 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 420px; font-size: 13.5px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+td.num { font-family: var(--font-mono); white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--money); }
+td.opt { color: var(--muted); }
+
+.empty { color: var(--muted); padding-block: 40px; text-align: center; }
+footer { margin-top: 56px; border-top: 1px solid var(--line); padding-top: 16px; }
+@media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+@media (max-width: 480px) {
+  .task { grid-template-columns: 24px minmax(0, 1fr); gap: 10px; }
+  .stat .v { font-size: 20px; }
+}
+
+html { padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--bg); }
+</style>
+</head>
+<body>
+<div class="strip" role="status" aria-live="polite">
+  <div class="strip-inner">
+    <span><b id="s-done">0</b> of <b id="s-total">0</b> done</span>
+    <span>left to spend <b id="s-left">$0</b></span>
+  </div>
+  <div class="bar" aria-hidden="true"><i id="s-bar"></i></div>
+</div>
+
+<div class="wrap">
+  <header class="intro">
+    <p class="kicker">Google IT Support course + Raspberry Pi + Linux</p>
+    <h1>Home Lab Roadmap</h1>
+    <p class="lede">Every step builds on the one before it, starting with what you are learning in Module 2 and ending with a small home lab you built and documented yourself. Tick things off as you go. Your progress is saved.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="k">Tasks done</div><div class="v" id="t-done">0 / 0</div></div>
+      <div class="stat"><div class="k">Estimated total</div><div class="v money" id="t-total">$0</div></div>
+      <div class="stat"><div class="k">Still to spend</div><div class="v money" id="t-left">$0</div></div>
+    </div>
+    <p class="note">Costs are US dollars and shown as a range. Raspberry Pi prices went up several times in 2026 because of memory costs, so check the current price before you buy. Your Coursera plan is billed separately (around $49 a month at the time of writing), so finishing the course sooner costs less.</p>
+
+    <div class="controls" role="group" aria-label="Filters">
+      <div class="seg" role="group" aria-label="Cost filter">
+        <button type="button" id="f-all" aria-pressed="true">All</button>
+        <button type="button" id="f-free" aria-pressed="false">Free</button>
+        <button type="button" id="f-paid" aria-pressed="false">Costs money</button>
+      </div>
+      <button type="button" class="toggle" id="f-hide" aria-pressed="false">Hide done</button>
+    </div>
+  </header>
+
+  <main id="levels"></main>
+  <p class="empty" id="empty" hidden>Nothing matches this filter.</p>
+
+  <footer>
+    <p class="note">Only capture network traffic and run scans on your own network. Never forward SSH or admin pages from your router to the internet; use the Tailscale step instead.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* Content. cost: [low, high] in USD. [[text]] renders as code. */
+  var LEVELS = [
+    {
+      name: "Look at what you already have",
+      blurb: "No purchases. These tasks turn Module 2 vocabulary into things you can see on your own network.",
+      tasks: [
+        { title: "Finish Module 2 and pass the quiz", why: "Everything later relies on IP addresses, DNS, DHCP and the network layers.", cost: [0, 0], time: "This week", tie: "Module 2",
+          steps: ["Retake any quiz question you missed and read why the right answer is right.", "List five terms you could not yet explain to a friend (subnet mask, DHCP lease, NAT, and so on) and look each one up.", "Keep that list. You will recognize most of them in the next tasks."] },
+        { title: "Find your own IP address, gateway and DNS server", why: "Four numbers describe how your device sits on your network. Write them down once and they stop being abstract.", cost: [0, 0], time: "15 min", tie: "IP addressing, subnet masks",
+          steps: ["Windows: open Command Prompt and run [[ipconfig /all]]. Mac: System Settings, Network, your connection, Details. Linux or Pi: [[ip addr]].", "Record the IP address, subnet mask, default gateway and DNS server.", "Notice that the gateway is usually the first address in your range, such as ending in .1."] },
+        { title: "Log in to your router and list connected devices", why: "The router is your DHCP server, your NAT device and your firewall in one box.", cost: [0, 0], time: "30 min", tie: "DHCP, NAT",
+          steps: ["Type the gateway address from the last task into a browser.", "The admin login is often on a sticker on the router. If your internet provider manages it, use their app instead.", "Find the list of connected devices and the DHCP settings. Look, but do not change anything yet."] },
+        { title: "Try ping, traceroute and nslookup", why: "These three commands answer most basic network questions: is it reachable, how does it get there, and does the name resolve.", cost: [0, 0], time: "30 min", tie: "ICMP, routing, DNS",
+          steps: ["Run [[ping]] on your gateway, then on [[8.8.8.8]], then on [[google.com]]. Compare the response times.", "Run [[traceroute google.com]] (Windows: [[tracert google.com]]) and count the hops.", "Run [[nslookup google.com]] and note which DNS server answered."] },
+        { title: "Draw a diagram of your home network", why: "A diagram you keep updating becomes the backbone of your final write-up.", cost: [0, 0], time: "30 min", tie: "Network topology",
+          steps: ["Draw the path from the internet to the modem, router, Wi-Fi or switch, and each device.", "Label each box with its IP address.", "Use paper or the free diagrams.net. You will revise it at the end of every level."],
+          links: [{ label: "diagrams.net", url: "https://app.diagrams.net" }] }
+      ]
+    },
+    {
+      name: "Linux basics, no hardware needed",
+      blurb: "Free lessons and a free game. Fifteen minutes a day beats one long weekend.",
+      tasks: [
+        { title: "Work through Linux Journey: Getting Started and Command Line", why: "A free, well-paced introduction to the terminal and the file system.", cost: [0, 0], time: "4 to 6 hours", tie: "Operating systems",
+          steps: ["Complete the Getting Started and Command Line sections.", "Type every example yourself instead of reading along."],
+          links: [{ label: "linuxjourney.com", url: "https://linuxjourney.com" }] },
+        { title: "Make a one-page command cheat sheet", why: "Writing each command in your own words is what makes it stick.", cost: [0, 0], time: "1 hour", tie: "Command line",
+          steps: ["Cover [[pwd]], [[ls]], [[cd]], [[cat]], [[less]], [[cp]], [[mv]], [[rm]], [[mkdir]] and [[man]].", "For each, write one example you actually ran.", "Add to it as you learn more. Keep it in a notes app or a text file."] },
+        { title: "Learn users, permissions and sudo", why: "Most Linux problems you will hit on the Pi are permission problems.", cost: [0, 0], time: "2 hours", tie: "File permissions, least privilege",
+          steps: ["Read the output of [[ls -l]]: what the r, w and x columns mean for owner, group and others.", "Practice [[chmod]] and [[chown]] on files you create.", "Understand why you use [[sudo]] for single commands instead of staying logged in as root."] },
+        { title: "Play OverTheWire Bandit, levels 0 to 10", why: "A free game that teaches Linux commands and SSH by making you log in to a remote machine and find a password.", cost: [0, 0], time: "3 to 5 hours", tie: "SSH, command line",
+          steps: ["Open a terminal. Mac, Linux and current Windows all include an SSH client.", "Follow the instructions for level 0 and work up to level 10.", "Take notes on new commands and add them to your cheat sheet."],
+          links: [{ label: "overthewire.org/wargames/bandit", url: "https://overthewire.org/wargames/bandit/" }] }
+      ]
+    },
+    {
+      name: "Practice labs on your computer",
+      blurb: "Still free. You will see packets and build virtual networks before you spend a dollar on hardware.",
+      tasks: [
+        { title: "Capture your own traffic with Wireshark", why: "Seeing a real DNS lookup or ping as packets makes the layers model concrete.", cost: [0, 0], time: "1 to 2 hours", tie: "Protocols, packets, layers",
+          steps: ["Install Wireshark and start a capture on your Wi-Fi or Ethernet connection.", "Run [[ping]] and [[nslookup]] in another window, then filter the capture with [[icmp]] and [[dns]].", "Find an ARP request. Reconnecting to Wi-Fi may also show you DHCP."],
+          links: [{ label: "wireshark.org", url: "https://www.wireshark.org" }] },
+        { title: "Build a small network in Cisco Packet Tracer", why: "A free simulator for subnets, switches and routers, so you can try things without breaking your real network.", cost: [0, 0], time: "3 hours", tie: "Subnets, routing, switching",
+          steps: ["Create a free Cisco Networking Academy account and download Packet Tracer.", "Connect two PCs through a switch, assign IP addresses in the same subnet, and ping between them.", "Add a router and a second subnet. Make them reach each other."],
+          links: [{ label: "Cisco Networking Academy", url: "https://www.netacad.com" }] },
+        { title: "Run Ubuntu in a virtual machine", why: "A safe Linux machine you can break and reset, with snapshots as an undo button.", cost: [0, 0], time: "2 to 3 hours", tie: "Operating systems, virtualization",
+          steps: ["Install VirtualBox (Windows, Intel Mac, Linux) or UTM (Apple silicon Mac).", "Give the VM about 4 GB of memory and 25 GB of disk, then install Ubuntu Server.", "Take a snapshot, break something on purpose, and restore it."],
+          links: [{ label: "VirtualBox", url: "https://www.virtualbox.org" }, { label: "UTM", url: "https://mac.getutm.app" }] }
+      ]
+    },
+    {
+      name: "Raspberry Pi starter",
+      blurb: "First purchase. You will set the Pi up without a monitor, the way real servers are managed.",
+      tasks: [
+        { title: "Buy the Raspberry Pi starter kit", why: "Everything you need to run the Pi headless. A 4 GB Pi 5 leaves room for Docker later. A 2 GB Pi 5 is a cheaper way in and handles everything up to the Docker level.", cost: null, time: "Order and wait", tie: "Hardware",
+          table: { head: ["Item", "Est. price", "Notes"], rows: [
+            ["Raspberry Pi 5, 4 GB", [85, 110], "Estimate. Was $85 in February and has gone up since. The 2 GB model is $77.50 as of Oct 1.", false],
+            ["Official 27W USB-C power supply", [12, 12], "Underpowered chargers cause random crashes.", false],
+            ["microSD card, 64 GB, A2 rated", [10, 15], "A name brand such as SanDisk or Samsung.", false],
+            ["Case with fan, or Active Cooler", [10, 20], "The Pi 5 runs warm.", false],
+            ["microSD card reader", [8, 8], "Only if your computer has no card slot.", true],
+            ["micro-HDMI to HDMI cable", [8, 8], "Only if you want a monitor. Skip it for headless.", true]
+          ] },
+          steps: ["Buy from an approved reseller. The site rpilocator.com tracks who has stock.", "Optional rows are not counted in the total for this task.", "Prices move often. Check the current price on the day you buy."],
+          links: [{ label: "rpilocator.com", url: "https://rpilocator.com" }, { label: "raspberrypi.com", url: "https://www.raspberrypi.com/products/" }] },
+        { title: "Flash Raspberry Pi OS Lite and set it up headless", why: "Lite has no desktop, so you learn the command line from the first minute.", cost: [0, 0], time: "30 min", tie: "Operating systems",
+          steps: ["On your computer, install Raspberry Pi Imager (free).", "Choose your Pi model, Raspberry Pi OS Lite (64-bit), and your microSD card.", "Open the customization settings and set a hostname, a username and password, your Wi-Fi if you are not using Ethernet, and turn on SSH.", "Write the card, put it in the Pi, and power it on. Ethernet is more reliable than Wi-Fi."],
+          links: [{ label: "Raspberry Pi Imager", url: "https://www.raspberrypi.com/software/" }] },
+        { title: "Boot, connect over SSH and update", why: "Your first real remote login. It uses everything from the networking module: IP address, port 22, DNS names.", cost: [0, 0], time: "30 min", tie: "IP addressing, SSH",
+          steps: ["Find the Pi in your router's device list, or try [[ssh youruser@yourhostname.local]].", "Once in, run [[sudo apt update && sudo apt full-upgrade -y]].", "Run [[sudo reboot]], wait a minute, and log in again."] },
+        { title: "Reserve a fixed IP address for the Pi", why: "Services need an address that never changes. This is DHCP reservation, straight from the course.", cost: [0, 0], time: "15 min", tie: "DHCP, MAC addresses",
+          steps: ["Find the Pi's MAC address with [[ip link]].", "In your router's DHCP settings, add a reservation that ties that MAC address to a chosen IP.", "Reboot the Pi, confirm it kept the address, and add it to your diagram."] },
+        { title: "Switch SSH to key-based login", why: "Keys are safer than passwords and are how professionals connect to servers.", cost: [0, 0], time: "30 min", tie: "Authentication, security",
+          steps: ["On your computer run [[ssh-keygen -t ed25519]].", "Copy the public key to the Pi with [[ssh-copy-id youruser@pi-address]]. On Windows, paste the public key into [[~/.ssh/authorized_keys]] on the Pi.", "Test the key login. Only then, optionally set [[PasswordAuthentication no]] in [[/etc/ssh/sshd_config]]. Keep a second session open while you test so you cannot lock yourself out."] }
+      ]
+    },
+    {
+      name: "First Pi projects",
+      blurb: "Small, useful things that put DNS, file permissions, scripting and firewalls to work.",
+      tasks: [
+        { title: "Install Pi-hole for network-wide ad blocking", why: "Pi-hole is a DNS server. Running one teaches you how DNS answers every lookup on your network.", cost: [0, 0], time: "1 to 2 hours", tie: "DNS",
+          steps: ["Follow the official Pi-hole install instructions on the Pi.", "Test it first from one computer with [[nslookup ads.example.com pi-address]] and by setting that one device's DNS by hand.", "When it works, point your router's DHCP DNS setting at the Pi. If the Pi goes down, devices lose DNS, so add a backup DNS server in the router until you trust it."],
+          links: [{ label: "pi-hole.net", url: "https://pi-hole.net" }] },
+        { title: "Share a folder with Samba", why: "Your own network file share, and a real lesson in Linux users and permissions.", cost: [0, 30], time: "1 to 2 hours", tie: "File permissions, SMB",
+          steps: ["Plug in a USB drive you already own. A new 128 GB flash drive is the paid option.", "Install [[samba]], create a share for the drive, and add a Samba user.", "Connect from your computer using the Pi's fixed IP address."] },
+        { title: "Log your network health with a cron job", why: "A tiny script that watches your connection teaches scripting and gives you real troubleshooting data.", cost: [0, 0], time: "1 to 2 hours", tie: "ping, scripting, troubleshooting",
+          steps: ["Write a bash script that pings your gateway and [[8.8.8.8]] and appends the result with a timestamp to a log file.", "Schedule it with [[crontab -e]] using [[*/5 * * * *]] to run every five minutes.", "After a week, read the log to find out when your connection actually dropped."] },
+        { title: "Turn on the firewall and fail2ban", why: "Your Pi is now a server. These two tools are the first layer of protecting it.", cost: [0, 0], time: "1 hour", tie: "Firewalls, ports",
+          steps: ["Run [[sudo apt install ufw fail2ban]].", "Allow SSH with [[sudo ufw allow ssh]] before you run [[sudo ufw enable]].", "Read [[sudo journalctl -u ssh]] and look for failed login attempts."] }
+      ]
+    },
+    {
+      name: "Home lab foundation",
+      blurb: "Containers, backups and wired networking. This is where the Pi starts to feel like infrastructure.",
+      tasks: [
+        { title: "Install Docker and Docker Compose", why: "Containers are how most home labs and many companies run services.", cost: [0, 0], time: "1 hour", tie: "Virtualization, services",
+          steps: ["Use Docker's official install instructions for Debian on a 64-bit Pi OS.", "Add your user to the [[docker]] group, then log out and in.", "Run [[docker run hello-world]] to confirm it works."],
+          links: [{ label: "docs.docker.com/engine/install", url: "https://docs.docker.com/engine/install/debian/" }] },
+        { title: "Run Uptime Kuma and a Homepage dashboard", why: "A status page for your own lab. Seeing something go red makes troubleshooting real.", cost: [0, 0], time: "2 hours", tie: "Ports, monitoring",
+          steps: ["Write one [[docker-compose.yml]] that starts both containers.", "In Uptime Kuma, add checks for your router, the Pi-hole and one website.", "Use Homepage as the start page that links to everything in the lab."] },
+        { title: "Set up backups and test a restore", why: "A backup you have not restored is a guess. This is the habit that separates a hobby from a lab.", cost: [50, 80], time: "2 hours", tie: "Backup and recovery",
+          steps: ["Buy an external USB SSD, 250 to 500 GB. Estimate; storage prices are high right now.", "Use [[rsync]] in a nightly cron job to copy your Docker configs and Pi-hole settings to it.", "Delete a file on purpose and restore it from the backup."] },
+        { title: "Wire the lab with a switch", why: "Wired is more reliable than Wi-Fi, and a switch is the piece every bigger lab grows from.", cost: [25, 40], time: "30 min", tie: "Switches, Ethernet",
+          steps: ["Buy a 5-port unmanaged gigabit switch (about $15 to $25) and a few Cat6 patch cables (about $10 to $15).", "Connect the Pi and anything else in the lab to the switch, and the switch to your router.", "Update your diagram."] },
+        { title: "Reach your lab from anywhere with Tailscale", why: "A private VPN between your devices, so you can log in to the Pi away from home without opening your router to the internet.", cost: [0, 0], time: "1 hour", tie: "VPNs, NAT",
+          steps: ["Create a free personal Tailscale account.", "Install Tailscale on the Pi and on your phone or computer.", "SSH to the Pi over mobile data to confirm it works from outside your home network."],
+          links: [{ label: "tailscale.com", url: "https://tailscale.com" }] }
+      ]
+    },
+    {
+      name: "Level up the lab",
+      blurb: "The hardest tasks and the biggest costs. Do these once the earlier levels feel comfortable.",
+      tasks: [
+        { title: "Add a second machine: Proxmox on a used mini PC", why: "Virtual machines on real server software. This is the jump from a Pi to a lab.", cost: [100, 200], time: "A weekend", tie: "Virtualization, servers",
+          steps: ["Buy a refurbished business mini PC such as a Dell OptiPlex Micro, HP EliteDesk Mini or Lenovo ThinkCentre Tiny, with 16 GB of memory if you can. Estimate; memory prices are high.", "Install Proxmox VE from its installer image.", "Create an Ubuntu Server VM and a Linux container, and move one of your Pi services onto it."],
+          links: [{ label: "proxmox.com", url: "https://www.proxmox.com" }] },
+        { title: "Split your network into VLANs", why: "Keeping lab, smart-home and personal devices on separate networks is how real networks limit damage.", cost: [45, 150], time: "A weekend", tie: "Subnets, VLANs, firewalls",
+          steps: ["Buy a managed 8-port switch (about $30 to $40) and a USB Ethernet adapter (about $15 to $25).", "You need a router that supports VLANs. Many provider routers do not. If yours does not, the high end of the cost range covers an inexpensive router that does.", "Create three VLANs, for lab, smart-home devices and everything else, then write firewall rules between them.", "Plan this on paper first and keep a direct cable to the router so you can undo mistakes."] },
+        { title: "Self-host one service you will really use", why: "A lab only sticks if it does something useful for you. Jellyfin, Immich and Nextcloud are common first picks.", cost: [0, 15], time: "2 to 4 hours", tie: "Services, reverse proxy, DNS",
+          steps: ["Pick one service and run it with Docker Compose.", "Put it behind a reverse proxy such as Caddy so you get a clean name and HTTPS.", "A domain name is optional (about $10 to $15 a year). Tailscale can also provide HTTPS names for free."] },
+        { title: "Rebuild it from code", why: "If you can rebuild the lab from files, your setup is understood and your notes are real.", cost: [0, 0], time: "A weekend", tie: "Version control, automation",
+          steps: ["Put your compose files and configuration in a private GitHub repository.", "Learn the basics of Ansible and write one playbook that sets up the Pi from a fresh install.", "Wipe a spare SD card and try to rebuild. Fix what you missed."] },
+        { title: "Write up your lab", why: "The write-up is the proof of everything you learned. It is also useful in an interview or on a resume.", cost: [0, 0], time: "2 to 3 hours", tie: "Documentation",
+          steps: ["Include your final network diagram and a table of IP addresses and VLANs.", "List each service and what it does.", "Describe three things that broke and how you fixed them. Those stories are the part people remember."] }
+      ]
+    }
+  ];
+
+  /* ---------- helpers ---------- */
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function fmt(s) { return esc(s).replace(/\[\[(.+?)\]\]/g, "<code>$1</code>"); }
+  function usd(n) { return "$" + n.toLocaleString("en-US"); }
+  function range(lo, hi) {
+    if (hi === 0) return "Free";
+    if (lo === hi) return usd(lo);
+    return usd(lo) + " to " + usd(hi);
+  }
+  function rangeOrZero(lo, hi) { return hi === 0 ? "$0" : range(lo, hi); }
+
+  /* derive cost for the shopping-list task from its required rows */
+  LEVELS.forEach(function (L) {
+    L.tasks.forEach(function (t) {
+      if (t.table) {
+        var lo = 0, hi = 0;
+        t.table.rows.forEach(function (r) { if (!r[3]) { lo += r[1][0]; hi += r[1][1]; } });
+        t.cost = [lo, hi];
+      }
+    });
+  });
+
+  /* ---------- build ---------- */
+  var main = document.getElementById("levels");
+  var all = [];
+  var n = 0;
+
+  LEVELS.forEach(function (L, li) {
+    var sec = document.createElement("section");
+    sec.className = "level";
+    var head = '<div class="level-head"><div class="level-top"><span>Level ' + (li + 1) + ' of ' + LEVELS.length + '</span><span class="band" data-band></span></div>' +
+      '<h2>' + esc(L.name) + '</h2><p class="level-blurb">' + esc(L.blurb) + '</p></div>';
+    var ul = document.createElement("ul");
+    ul.className = "tasks";
+
+    L.tasks.forEach(function (t) {
+      n += 1;
+      t.id = "t" + n;
+      var li2 = document.createElement("li");
+      li2.className = "task";
+      li2.dataset.id = t.id;
+      var free = t.cost[1] === 0;
+      var html = '<input type="checkbox" id="c-' + t.id + '" aria-label="Mark done">' +
+        '<div><label class="title" for="c-' + t.id + '">' + esc(t.title) + '</label>' +
+        '<p class="why">' + fmt(t.why) + '</p>' +
+        '<div class="meta"><span class="cost' + (free ? ' free' : '') + '">' + range(t.cost[0], t.cost[1]) + '</span><span>' + esc(t.time) + '</span><span>Ties to: ' + esc(t.tie) + '</span></div>' +
+        '<details><summary>How to do it</summary>';
+      if (t.table) {
+        html += '<div class="tablewrap"><table><thead><tr><th>Item</th><th>Est. price</th><th>Notes</th></tr></thead><tbody>';
+        t.table.rows.forEach(function (r) {
+          html += '<tr><td' + (r[3] ? ' class="opt"' : '') + '>' + esc(r[0]) + (r[3] ? ' (optional)' : '') + '</td><td class="num">' + range(r[1][0], r[1][1]) + '</td><td class="opt">' + esc(r[2]) + '</td></tr>';
+        });
+        html += '</tbody></table></div>';
+      }
+      html += '<ol>';
+      t.steps.forEach(function (s) { html += '<li>' + fmt(s) + '</li>'; });
+      html += '</ol>';
+      if (t.links) {
+        html += '<p class="linkrow">';
+        t.links.forEach(function (l) { html += '<a href="' + esc(l.url) + '" target="_blank" rel="noopener">' + esc(l.label) + '</a>'; });
+        html += '</p>';
+      }
+      html += '</details></div>';
+      li2.innerHTML = html;
+      ul.appendChild(li2);
+      all.push({ t: t, el: li2, cb: li2.querySelector("input"), level: sec });
+    });
+
+    sec.innerHTML = head;
+    sec.appendChild(ul);
+    sec._tasks = L.tasks;
+    main.appendChild(sec);
+  });
+
+  /* ---------- state ---------- */
+  var done = new Set();
+  var filter = "all";
+  var hideDone = false;
+  var LS_KEY = "homelab-roadmap-app-done";
+
+  try {
+    var raw = localStorage.getItem(LS_KEY);
+    if (raw) JSON.parse(raw).forEach(function (id) { done.add(id); });
+  } catch (e) {}
+
+  function $(id) { return document.getElementById(id); }
+
+  function update() {
+    var total = all.length, doneCount = 0;
+    var totLo = 0, totHi = 0, leftLo = 0, leftHi = 0;
+    var anyVisible = false;
+    var perLevel = new Map();
+
+    all.forEach(function (a) {
+      var isDone = done.has(a.t.id);
+      a.cb.checked = isDone;
+      a.el.classList.toggle("done", isDone);
+      if (isDone) doneCount += 1;
+      totLo += a.t.cost[0]; totHi += a.t.cost[1];
+      if (!isDone) { leftLo += a.t.cost[0]; leftHi += a.t.cost[1]; }
+
+      var isFree = a.t.cost[1] === 0;
+      var show = true;
+      if (filter === "free" && !isFree) show = false;
+      if (filter === "paid" && isFree) show = false;
+      if (hideDone && isDone) show = false;
+      a.el.hidden = !show;
+      if (show) anyVisible = true;
+
+      var rec = perLevel.get(a.level) || { done: 0, count: 0, lo: 0, hi: 0, shown: 0 };
+      rec.count += 1; rec.lo += a.t.cost[0]; rec.hi += a.t.cost[1];
+      if (isDone) rec.done += 1;
+      if (show) rec.shown += 1;
+      perLevel.set(a.level, rec);
+    });
+
+    perLevel.forEach(function (rec, sec) {
+      sec.hidden = rec.shown === 0;
+      sec.querySelector("[data-band]").textContent = rec.done + " of " + rec.count + " done  ·  " + rangeOrZero(rec.lo, rec.hi);
+    });
+
+    $("empty").hidden = anyVisible;
+    $("s-done").textContent = doneCount;
+    $("s-total").textContent = total;
+    $("s-left").textContent = rangeOrZero(leftLo, leftHi);
+    $("s-bar").style.width = (total ? (doneCount / total) * 100 : 0) + "%";
+    $("t-done").textContent = doneCount + " / " + total;
+    $("t-total").textContent = rangeOrZero(totLo, totHi);
+    $("t-left").textContent = rangeOrZero(leftLo, leftHi);
+  }
+
+  /* ---------- persistence: this device's browser storage ---------- */
+  function saveLocal() {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(Array.from(done))); } catch (e) {}
+  }
+  function push() {}
+
+  main.addEventListener("change", function (e) {
+    var cb = e.target;
+    if (!cb || cb.type !== "checkbox") return;
+    var id = cb.id.replace(/^c-/, "");
+    if (cb.checked) done.add(id); else done.delete(id);
+    saveLocal();
+    push();
+    update();
+  });
+
+  function setFilter(f) {
+    filter = f;
+    ["all", "free", "paid"].forEach(function (k) { $("f-" + k).setAttribute("aria-pressed", String(k === f)); });
+    update();
+  }
+  $("f-all").addEventListener("click", function () { setFilter("all"); });
+  $("f-free").addEventListener("click", function () { setFilter("free"); });
+  $("f-paid").addEventListener("click", function () { setFilter("paid"); });
+  $("f-hide").addEventListener("click", function () {
+    hideDone = !hideDone;
+    this.setAttribute("aria-pressed", String(hideDone));
+    update();
+  });
+
+  update();
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("./sw.js").catch(function () {});
+    });
+  }
+})();
+</script>
+</body>
+</html>
