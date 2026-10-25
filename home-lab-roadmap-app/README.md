@@ -4,6 +4,7 @@ A step-by-step plan from IT networking basics to a Raspberry Pi home lab, ordere
 
 ## Publish it on GitHub Pages (no Git commands needed)
 
+
 You need a free GitHub account. GitHub Pages is free for **public** repositories, so do not put anything private in this one. These files contain nothing private.
 
 1. Unzip the download so you have the loose files. All files go at the top level, with no folders.
