@@ -308,7 +308,13 @@ html { padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--bg); 
           links: [{ label: "Cisco Networking Academy", url: "https://www.netacad.com" }] },
         { title: "Run Ubuntu in a virtual machine", why: "A safe Linux machine you can break and reset, with snapshots as an undo button.", cost: [0, 0], time: "2 to 3 hours", tie: "Operating systems, virtualization",
           steps: ["Install VirtualBox (Windows, Intel Mac, Linux) or UTM (Apple silicon Mac).", "Give the VM about 4 GB of memory and 25 GB of disk, then install Ubuntu Server.", "Take a snapshot, break something on purpose, and restore it."],
-          links: [{ label: "VirtualBox", url: "https://www.virtualbox.org" }, { label: "UTM", url: "https://mac.getutm.app" }] }
+          links: [{ label: "VirtualBox", url: "https://www.virtualbox.org" }, { label: "UTM", url: "https://mac.getutm.app" }] },
+        { key: "g1", title: "Create a GitHub account and your first repository", why: "GitHub stores your files and keeps a history of every change. You will use it to publish this roadmap now and to keep your lab's settings later.", cost: [0, 0], time: "30 min", tie: "Version control",
+          steps: ["Sign up for a free account at github.com. Your username becomes part of your web address, so pick one you are happy to share.", "Click the + at the top right, then New repository. Name it, choose Public, and click Create repository.", "Click uploading an existing file, drag in a file, and click Commit changes. A commit is GitHub's word for saving a set of changes.", "Open your file in the repository and click the pencil icon to edit it. Commit a small change and look at the history to see both versions."],
+          links: [{ label: "github.com", url: "https://github.com" }] },
+        { key: "g2", title: "Publish a page with GitHub Pages", why: "Pages turns the files in a public repository into a free website. It is how this roadmap became an app on your phone, and the same method will host your lab write-up.", cost: [0, 0], time: "1 hour", tie: "Web hosting, troubleshooting",
+          steps: ["Put your page's files at the top level of a public repository, with the main page named [[index.html]]. A folder inside the repository does not count.", "Open Settings, then Pages. Set Source to Deploy from a branch, Branch to [[main]], and the folder to [[/ (root)]]. Click Save.", "Open the Actions tab and wait for the build to show a green check. Then open the address at the top of the Pages screen.", "If you see a 404, the usual cause is [[index.html]] sitting inside a folder. Move the files to the top level and let it rebuild.", "To install a page on an iPhone, open it in Safari, tap Share, then Add to Home Screen."],
+          links: [{ label: "docs.github.com/pages", url: "https://docs.github.com/en/pages" }] }
       ]
     },
     {
@@ -384,7 +390,7 @@ html { padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--bg); 
         { title: "Rebuild it from code", why: "If you can rebuild the lab from files, your setup is understood and your notes are real.", cost: [0, 0], time: "A weekend", tie: "Version control, automation",
           steps: ["Put your compose files and configuration in a private GitHub repository.", "Learn the basics of Ansible and write one playbook that sets up the Pi from a fresh install.", "Wipe a spare SD card and try to rebuild. Fix what you missed."] },
         { title: "Write up your lab", why: "The write-up is the proof of everything you learned. It is also useful in an interview or on a resume.", cost: [0, 0], time: "2 to 3 hours", tie: "Documentation",
-          steps: ["Include your final network diagram and a table of IP addresses and VLANs.", "List each service and what it does.", "Describe three things that broke and how you fixed them. Those stories are the part people remember."] }
+          steps: ["Include your final network diagram and a table of IP addresses and VLANs.", "List each service and what it does.", "Describe three things that broke and how you fixed them. Those stories are the part people remember.", "Publish the write-up as a page on GitHub Pages so you have a link to share as a portfolio piece."] }
       ]
     }
   ];
@@ -425,8 +431,7 @@ html { padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--bg); 
     ul.className = "tasks";
 
     L.tasks.forEach(function (t) {
-      n += 1;
-      t.id = "t" + n;
+      if (t.key) { t.id = t.key; } else { n += 1; t.id = "t" + n; }
       var li2 = document.createElement("li");
       li2.className = "task";
       li2.dataset.id = t.id;

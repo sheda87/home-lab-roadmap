@@ -1,6 +1,6 @@
 /* Offline support for Home Lab Roadmap.
    Change CACHE_VERSION whenever you edit any file, so installed copies pick up the update. */
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v2";
 const CACHE = "homelab-roadmap-" + CACHE_VERSION;
 const SHELL = [
   "./",
