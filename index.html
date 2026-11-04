@@ -215,18 +215,93 @@ footer { margin-top: 56px; border-top: 1px solid var(--line); padding-top: 16px;
 }
 
 html { padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--bg); }
+
+/* ---------- tabs and troubleshooting log ---------- */
+[hidden] { display: none !important; }
+.tabs { display: flex; gap: 6px; max-width: 760px; margin: 8px auto 0; flex-wrap: wrap; }
+.tabs button {
+  font: inherit; font-family: var(--font-mono); font-size: 12.5px;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 6px;
+  padding: 6px 12px; cursor: pointer;
+}
+.tabs button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+.btn {
+  font: inherit; font-family: var(--font-mono); font-size: 12.5px;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 6px;
+  padding: 8px 14px; cursor: pointer; min-height: 40px;
+}
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.small { padding: 5px 10px; min-height: 0; font-size: 12px; }
+.btn.danger[data-armed] { background: var(--money); color: var(--bg); border-color: var(--money); }
+
+.log-tools { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; align-items: stretch; }
+.log-tools > * { min-height: 40px; }
+.log-tools input[type="search"] { flex: 1 1 200px; min-width: 0; }
+.log-tools select { flex: 0 1 170px; min-width: 0; }
+.log-tools .seg button { min-height: 40px; }
+
+#log-form input, #log-form select, #log-form textarea,
+.log-tools input, .log-tools select {
+  font: inherit; font-size: 16px; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+  width: 100%; min-width: 0;
+}
+#log-form textarea { min-height: 84px; resize: vertical; line-height: 1.45; }
+
+#log-form {
+  display: grid; gap: 14px; margin-top: 20px; padding: 16px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  scroll-margin-top: 140px;
+}
+#log-form h2 { margin: 0; font-size: 19px; }
+.f-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.field { display: grid; gap: 4px; min-width: 0; }
+.field label { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.field .hint { font-size: 13px; color: var(--muted); margin: 0; }
+.f-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+#log-msg { color: var(--money); font-size: 13.5px; }
+
+#log-list { margin-top: 24px; }
+.entry { border-top: 1px solid var(--line); padding-block: 16px; }
+.e-top { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; font-family: var(--font-mono); font-size: 12px; }
+.pill { padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+.pill.solved { background: var(--accent); color: var(--accent-ink); }
+.pill.open { background: var(--money); color: var(--bg); }
+.chip { background: var(--chip); color: var(--muted); padding: 2px 8px; border-radius: 4px; }
+.chip.starter { color: var(--accent); }
+.e-date { color: var(--muted); font-variant-numeric: tabular-nums; }
+.e-title { margin: 8px 0 4px; font-size: 17px; line-height: 1.35; font-weight: 600; text-wrap: balance; overflow-wrap: anywhere; }
+.e-snip { margin: 0; color: var(--muted); max-width: 64ch; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.entry details { margin-top: 8px; }
+.sec { margin-top: 12px; }
+.sec b { display: block; font-family: var(--font-mono); font-size: 11.5px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.sec p { margin: 2px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; max-width: 64ch; }
+.e-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+.log-foot { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--line); display: grid; gap: 12px; }
+.log-foot .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.log-foot input[type="file"] { font-size: 14px; max-width: 100%; color: var(--ink); }
+#log-restore-msg { font-size: 13.5px; color: var(--muted); }
 </style>
 </head>
 <body>
-<div class="strip" role="status" aria-live="polite">
-  <div class="strip-inner">
+<div class="strip">
+  <div class="strip-inner" role="status" aria-live="polite">
     <span><b id="s-done">0</b> of <b id="s-total">0</b> done</span>
     <span>left to spend <b id="s-left">$0</b></span>
   </div>
   <div class="bar" aria-hidden="true"><i id="s-bar"></i></div>
+  <div class="tabs" role="group" aria-label="Sections">
+    <button type="button" id="tab-road" aria-pressed="true">Roadmap</button>
+    <button type="button" id="tab-log" aria-pressed="false">Troubleshooting log <span id="log-count"></span></button>
+  </div>
 </div>
 
 <div class="wrap">
+  <div id="view-roadmap">
   <header class="intro">
     <p class="kicker">Google IT Support course + Raspberry Pi + Linux</p>
     <h1>Home Lab Roadmap</h1>
@@ -251,6 +326,72 @@ html { padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--bg); 
 
   <main id="levels"></main>
   <p class="empty" id="empty" hidden>Nothing matches this filter.</p>
+  </div>
+
+  <section id="view-log" hidden aria-label="Troubleshooting log">
+    <header class="intro">
+      <p class="kicker">Portfolio evidence</p>
+      <h1>Troubleshooting log</h1>
+      <p class="lede">Write down what broke, what you tried, and what fixed it. A short record of how you worked through a problem is the best proof of IT support skills you can show.</p>
+
+      <div class="log-tools">
+        <button type="button" class="btn primary" id="log-new">New entry</button>
+        <input type="search" id="log-q" placeholder="Search your log" aria-label="Search your log">
+        <select id="log-area-f" aria-label="Filter by area"></select>
+        <div class="seg" role="group" aria-label="Filter by status">
+          <button type="button" id="log-s-all" aria-pressed="true">All</button>
+          <button type="button" id="log-s-open" aria-pressed="false">Open</button>
+          <button type="button" id="log-s-solved" aria-pressed="false">Solved</button>
+        </div>
+      </div>
+    </header>
+
+    <form id="log-form" hidden novalidate>
+      <h2 id="log-form-title">New entry</h2>
+      <div class="field">
+        <label for="f-title">What broke</label>
+        <input type="text" id="f-title" maxlength="140" placeholder="Example: Pi will not accept my SSH login">
+      </div>
+      <div class="f-row">
+        <div class="field"><label for="f-date">Date</label><input type="date" id="f-date"></div>
+        <div class="field"><label for="f-area">Area</label><select id="f-area"></select></div>
+        <div class="field"><label for="f-status">Status</label>
+          <select id="f-status"><option>Open</option><option>Solved</option></select></div>
+      </div>
+      <div class="field"><label for="f-saw">What I saw</label>
+        <textarea id="f-saw" placeholder="The exact error message or behavior, and when it started."></textarea></div>
+      <div class="field"><label for="f-tried">What I tried</label>
+        <textarea id="f-tried" placeholder="Each thing you checked, in order, including what did not work."></textarea></div>
+      <div class="field"><label for="f-cause">Cause</label>
+        <textarea id="f-cause" placeholder="What was actually wrong. Leave blank while it is still open."></textarea></div>
+      <div class="field"><label for="f-fix">Fix</label>
+        <textarea id="f-fix" placeholder="What you changed to solve it."></textarea></div>
+      <div class="field"><label for="f-learned">What I learned</label>
+        <textarea id="f-learned" placeholder="What you would check first next time."></textarea></div>
+      <div class="f-actions">
+        <button type="submit" class="btn primary">Save entry</button>
+        <button type="button" class="btn" id="log-cancel">Cancel</button>
+        <span id="log-msg" role="alert"></span>
+      </div>
+    </form>
+
+    <div id="log-list"></div>
+    <p class="empty" id="log-empty" hidden></p>
+
+    <div class="log-foot">
+      <div class="row">
+        <button type="button" class="btn" id="log-md">Download all as Markdown</button>
+        <button type="button" class="btn" id="log-json">Back up (.json)</button>
+      </div>
+      <div class="row">
+        <label for="log-file" class="note">Restore from a backup:</label>
+        <input type="file" id="log-file" accept=".json,application/json">
+      </div>
+      <p id="log-restore-msg" role="status"></p>
+      <p class="note">Entries are saved in this browser on this device only. Clearing the browser's site data erases them, so download a backup now and then.</p>
+    </div>
+  </section>
+
 
   <footer>
     <p class="note">Only capture network traffic and run scans on your own network. Never forward SSH or admin pages from your router to the internet; use the Tailscale step instead.</p>
@@ -277,7 +418,9 @@ html { padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--bg); 
           steps: ["Run [[ping]] on your gateway, then on [[8.8.8.8]], then on [[google.com]]. Compare the response times.", "Run [[traceroute google.com]] (Windows: [[tracert google.com]]) and count the hops.", "Run [[nslookup google.com]] and note which DNS server answered."] },
         { title: "Draw a diagram of your home network", why: "A diagram you keep updating becomes the backbone of your final write-up.", cost: [0, 0], time: "30 min", tie: "Network topology",
           steps: ["Draw the path from the internet to the modem, router, Wi-Fi or switch, and each device.", "Label each box with its IP address.", "Use paper or the free diagrams.net. You will revise it at the end of every level."],
-          links: [{ label: "diagrams.net", url: "https://app.diagrams.net" }] }
+          links: [{ label: "diagrams.net", url: "https://app.diagrams.net" }] },
+        { key: "g3", title: "Start your troubleshooting log", why: "IT support is mostly working out why something broke. A written record of what you saw, tried and fixed becomes proof of your skills.", cost: [0, 0], time: "15 min", tie: "Troubleshooting",
+          steps: ["Open the Troubleshooting log tab at the top of this page.", "Read the starter entry about the GitHub Pages 404, then edit it or delete it.", "Add an entry any time something does not work: what you saw, what you tried, the cause and the fix.", "Use Download all as Markdown to save your entries or publish them later."] }
       ]
     },
     {
@@ -390,7 +533,7 @@ html { padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--bg); 
         { title: "Rebuild it from code", why: "If you can rebuild the lab from files, your setup is understood and your notes are real.", cost: [0, 0], time: "A weekend", tie: "Version control, automation",
           steps: ["Put your compose files and configuration in a private GitHub repository.", "Learn the basics of Ansible and write one playbook that sets up the Pi from a fresh install.", "Wipe a spare SD card and try to rebuild. Fix what you missed."] },
         { title: "Write up your lab", why: "The write-up is the proof of everything you learned. It is also useful in an interview or on a resume.", cost: [0, 0], time: "2 to 3 hours", tie: "Documentation",
-          steps: ["Include your final network diagram and a table of IP addresses and VLANs.", "List each service and what it does.", "Describe three things that broke and how you fixed them. Those stories are the part people remember.", "Publish the write-up as a page on GitHub Pages so you have a link to share as a portfolio piece."] }
+          steps: ["Include your final network diagram and a table of IP addresses and VLANs.", "List each service and what it does.", "Pick three entries from your Troubleshooting log and copy them in. Those stories are the part people remember.", "Publish the write-up as a page on GitHub Pages so you have a link to share as a portfolio piece."] }
       ]
     }
   ];
@@ -562,6 +705,282 @@ html { padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--bg); 
       navigator.serviceWorker.register("./sw.js").catch(function () {});
     });
   }
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+
+  var KEY = "homelab-roadmap-log";
+  var TABKEY = "homelab-roadmap-tab";
+  var AREAS = ["Networking", "Linux", "Raspberry Pi", "GitHub", "Docker", "Hardware", "Other"];
+  var FIELDS = ["saw", "tried", "cause", "fix", "learned"];
+  var LABELS = { saw: "What I saw", tried: "What I tried", cause: "Cause", fix: "Fix", learned: "What I learned" };
+
+  var SEED = {
+    id: "starter-github-404",
+    example: true,
+    created: 1,
+    title: "GitHub Pages showed a 404 after publishing",
+    date: "2026-10-30",
+    area: "GitHub",
+    status: "Solved",
+    saw: "The live address returned 404 File not found, even though the Actions tab showed green checks for every build.",
+    tried: "Confirmed the repository was public and Pages was set to main and / (root). Tried a hard refresh and a private window. Opened a second file, manifest.webmanifest, and it was also a 404. Compared my address with the one GitHub listed under Deployments.",
+    cause: "All 8 files had been uploaded inside a folder called home-lab-roadmap-app, so there was no index.html at the top level of the repository.",
+    fix: "Uploaded the files again at the top level, then deleted the old folder. The site loaded after the next green build.",
+    learned: "A green build only means GitHub published something. Check what is at the top level of the repository, and test a second file to tell a path problem from a file problem."
+  };
+
+  var entries = [];
+  var editingId = null;
+  var fStatus = "all";
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function str(v) { return typeof v === "string" ? v : ""; }
+  function today() {
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+
+  function clean(e) {
+    var out = {
+      id: str(e.id) || uid(),
+      created: typeof e.created === "number" ? e.created : Date.now(),
+      title: str(e.title).trim().slice(0, 140),
+      date: str(e.date),
+      area: AREAS.indexOf(e.area) >= 0 ? e.area : "Other",
+      status: e.status === "Solved" ? "Solved" : "Open"
+    };
+    FIELDS.forEach(function (f) { out[f] = str(e[f]); });
+    if (e.example === true) out.example = true;
+    return out;
+  }
+  function isEntry(e) { return e && typeof e === "object" && typeof e.title === "string" && e.title.trim() !== ""; }
+
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(entries)); } catch (e) {} }
+  function load() {
+    var raw = null;
+    try { raw = localStorage.getItem(KEY); } catch (e) {}
+    if (raw === null) { entries = [clean(SEED)]; save(); return; }
+    try {
+      var a = JSON.parse(raw);
+      entries = Array.isArray(a) ? a.filter(isEntry).map(clean) : [];
+    } catch (e) { entries = []; }
+  }
+
+  function sorted(list) {
+    return list.slice().sort(function (a, b) {
+      if (a.date !== b.date) return a.date < b.date ? 1 : -1;
+      return b.created - a.created;
+    });
+  }
+
+  function filtered() {
+    var q = $("log-q").value.trim().toLowerCase();
+    var area = $("log-area-f").value;
+    return sorted(entries).filter(function (e) {
+      if (area !== "all" && e.area !== area) return false;
+      if (fStatus !== "all" && e.status.toLowerCase() !== fStatus) return false;
+      if (!q) return true;
+      var hay = [e.title, e.area, e.status].concat(FIELDS.map(function (f) { return e[f]; })).join(" ").toLowerCase();
+      return hay.indexOf(q) >= 0;
+    });
+  }
+
+  function entryHtml(e) {
+    var body = "";
+    FIELDS.forEach(function (f) {
+      if (e[f]) body += '<div class="sec"><b>' + LABELS[f] + '</b><p>' + esc(e[f]) + '</p></div>';
+    });
+    return '<article class="entry" data-id="' + esc(e.id) + '">' +
+      '<div class="e-top"><span class="pill ' + (e.status === "Solved" ? "solved" : "open") + '">' + esc(e.status) + '</span>' +
+      '<span class="chip">' + esc(e.area) + '</span>' +
+      (e.date ? '<span class="e-date">' + esc(e.date) + '</span>' : '') +
+      (e.example ? '<span class="chip starter">Starter entry</span>' : '') + '</div>' +
+      '<h3 class="e-title">' + esc(e.title) + '</h3>' +
+      (e.saw ? '<p class="e-snip">' + esc(e.saw) + '</p>' : '') +
+      (body ? '<details><summary>Read the full entry</summary>' + body + '</details>' : '') +
+      '<div class="e-actions">' +
+      '<button type="button" class="btn small" data-act="edit">Edit</button>' +
+      '<button type="button" class="btn small" data-act="copy">Copy as Markdown</button>' +
+      '<button type="button" class="btn small danger" data-act="del">Delete</button>' +
+      '</div></article>';
+  }
+
+  function render() {
+    var shown = filtered();
+    $("log-list").innerHTML = shown.map(entryHtml).join("");
+    $("log-count").textContent = entries.length ? "(" + entries.length + ")" : "";
+    var empty = $("log-empty");
+    if (shown.length) { empty.hidden = true; return; }
+    empty.hidden = false;
+    empty.textContent = entries.length
+      ? "No entries match this search."
+      : "Nothing logged yet. Choose New entry the next time something does not work.";
+  }
+
+  /* ---------- markdown and files ---------- */
+  function toMd(e) {
+    var meta = [e.date, e.area, e.status].filter(Boolean).join(" · ");
+    var out = "## " + e.title + "\n\n*" + meta + "*\n";
+    FIELDS.forEach(function (f) { if (e[f]) out += "\n**" + LABELS[f] + "**\n\n" + e[f] + "\n"; });
+    return out;
+  }
+  function download(name, text, type) {
+    try {
+      var url = URL.createObjectURL(new Blob([text], { type: type }));
+      var a = document.createElement("a");
+      a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+    } catch (e) {}
+  }
+  function copyText(text, btn) {
+    var label = btn.textContent;
+    function done() { btn.textContent = "Copied"; setTimeout(function () { btn.textContent = label; }, 1500); }
+    function fallback() {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); done(); } catch (e) {}
+      ta.remove();
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(fallback);
+    } else { fallback(); }
+  }
+
+  /* ---------- form ---------- */
+  function closeForm() { $("log-form").hidden = true; editingId = null; $("log-msg").textContent = ""; }
+  function openForm(entry) {
+    editingId = entry ? entry.id : null;
+    $("log-form-title").textContent = entry ? "Edit entry" : "New entry";
+    $("f-title").value = entry ? entry.title : "";
+    $("f-date").value = entry ? entry.date : today();
+    $("f-area").value = entry ? entry.area : AREAS[0];
+    $("f-status").value = entry ? entry.status : "Open";
+    FIELDS.forEach(function (f) { $("f-" + f).value = entry ? entry[f] : ""; });
+    $("log-msg").textContent = "";
+    $("log-form").hidden = false;
+    $("log-form").scrollIntoView({ block: "start" });
+    $("f-title").focus({ preventScroll: true });
+  }
+
+  $("log-form").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var title = $("f-title").value.trim();
+    if (!title) { $("log-msg").textContent = "Add a short title first."; $("f-title").focus(); return; }
+    var data = {
+      title: title, date: $("f-date").value, area: $("f-area").value, status: $("f-status").value
+    };
+    FIELDS.forEach(function (f) { data[f] = $("f-" + f).value; });
+    if (editingId) {
+      entries = entries.map(function (e) {
+        return e.id === editingId ? clean(Object.assign({}, data, { id: e.id, created: e.created })) : e;
+      });
+    } else {
+      entries.push(clean(Object.assign({}, data, { id: uid(), created: Date.now() })));
+    }
+    save(); closeForm(); render();
+  });
+  $("log-cancel").addEventListener("click", closeForm);
+  $("log-new").addEventListener("click", function () { openForm(null); });
+
+  /* ---------- list actions ---------- */
+  $("log-list").addEventListener("click", function (ev) {
+    var btn = ev.target.closest("button[data-act]");
+    if (!btn) return;
+    var id = btn.closest(".entry").getAttribute("data-id");
+    var entry = entries.filter(function (e) { return e.id === id; })[0];
+    if (!entry) return;
+    var act = btn.getAttribute("data-act");
+    if (act === "edit") { openForm(entry); }
+    else if (act === "copy") { copyText(toMd(entry), btn); }
+    else if (act === "del") {
+      if (btn.hasAttribute("data-armed")) {
+        entries = entries.filter(function (e) { return e.id !== id; });
+        save(); render();
+      } else {
+        btn.setAttribute("data-armed", "1");
+        btn.textContent = "Tap again to delete";
+        setTimeout(function () {
+          if (btn.isConnected) { btn.removeAttribute("data-armed"); btn.textContent = "Delete"; }
+        }, 3000);
+      }
+    }
+  });
+
+  /* ---------- filters ---------- */
+  $("log-q").addEventListener("input", render);
+  $("log-area-f").addEventListener("change", render);
+  ["all", "open", "solved"].forEach(function (k) {
+    $("log-s-" + k).addEventListener("click", function () {
+      fStatus = k;
+      ["all", "open", "solved"].forEach(function (j) { $("log-s-" + j).setAttribute("aria-pressed", String(j === k)); });
+      render();
+    });
+  });
+
+  /* ---------- export, backup, restore ---------- */
+  $("log-md").addEventListener("click", function () {
+    var text = "# Troubleshooting log\n\n" + sorted(entries).map(toMd).join("\n---\n\n");
+    download("troubleshooting-log.md", text, "text/markdown");
+  });
+  $("log-json").addEventListener("click", function () {
+    download("troubleshooting-log-backup.json", JSON.stringify({ app: "home-lab-roadmap", version: 1, entries: entries }, null, 2), "application/json");
+  });
+  $("log-file").addEventListener("change", function () {
+    var file = this.files && this.files[0];
+    var msg = $("log-restore-msg");
+    var input = this;
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var parsed = JSON.parse(String(reader.result));
+        var list = Array.isArray(parsed) ? parsed : parsed && parsed.entries;
+        if (!Array.isArray(list)) throw new Error("shape");
+        var incoming = list.filter(isEntry).map(clean);
+        incoming.forEach(function (n) {
+          var i = entries.findIndex(function (e) { return e.id === n.id; });
+          if (i >= 0) entries[i] = n; else entries.push(n);
+        });
+        save(); render();
+        msg.textContent = "Restored " + incoming.length + (incoming.length === 1 ? " entry." : " entries.");
+      } catch (e) {
+        msg.textContent = "That file is not a backup from this app.";
+      }
+      input.value = "";
+    };
+    reader.onerror = function () { msg.textContent = "The file could not be read."; };
+    reader.readAsText(file);
+  });
+
+  /* ---------- tabs ---------- */
+  function showTab(which, scroll) {
+    var log = which === "log";
+    $("view-log").hidden = !log;
+    $("view-roadmap").hidden = log;
+    $("tab-road").setAttribute("aria-pressed", String(!log));
+    $("tab-log").setAttribute("aria-pressed", String(log));
+    try { localStorage.setItem(TABKEY, log ? "log" : "road"); } catch (e) {}
+    if (scroll) window.scrollTo(0, 0);
+  }
+  $("tab-road").addEventListener("click", function () { showTab("road", true); });
+  $("tab-log").addEventListener("click", function () { showTab("log", true); });
+
+  /* ---------- start ---------- */
+  var areaF = $("log-area-f"), areaForm = $("f-area");
+  areaF.innerHTML = '<option value="all">All areas</option>' + AREAS.map(function (a) { return '<option>' + esc(a) + '</option>'; }).join("");
+  areaForm.innerHTML = AREAS.map(function (a) { return '<option>' + esc(a) + '</option>'; }).join("");
+  load();
+  render();
+  var startTab = "road";
+  try { startTab = localStorage.getItem(TABKEY) === "log" ? "log" : "road"; } catch (e) {}
+  showTab(startTab, false);
 })();
 </script>
 </body>
